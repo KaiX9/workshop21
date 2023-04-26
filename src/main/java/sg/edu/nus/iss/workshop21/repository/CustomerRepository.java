@@ -68,26 +68,26 @@ public class CustomerRepository {
 
     // Fetch orders for customer 
 
-    public List<Order> getCustomerOrders(Integer id) {
+    // public List<Order> getCustomerOrders(Integer id) {
 
-        List<Order> orders = new ArrayList<Order>();
+    //     List<Order> orders = new ArrayList<Order>();
 
-        SqlRowSet rs = jdbcTemplate.queryForRowSet(SELECT_ORDER_FOR_CUSTOMER, new Object[] {id});
+    //     SqlRowSet rs = jdbcTemplate.queryForRowSet(SELECT_ORDER_FOR_CUSTOMER, new Object[] {id});
 
-        while (rs.next()) {
-            orders.add(Order.create(rs));
-        }
+    //     while (rs.next()) {
+    //         orders.add(Order.create(rs));
+    //     }
 
-        return orders;
-    }
+    //     return orders;
+    // }
 
     // Fetch customer order via row.first()
-    // public Optional<Order> getCustomerOrders(Integer id) {
+    public Optional<Order> getCustomerOrders(Integer id) {
 
-    //     SqlRowSet rs = jdbcTemplate.queryForRowSet(SELECT_ORDER_FOR_CUSTOMER, id);
-    //     if (rs.first()) {
-    //         return Optional.of(Order.create(rs));
-    //     }
-    //     return Optional.empty();
-    // }
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(SELECT_ORDER_FOR_CUSTOMER, id);
+        if (rs.first()) {
+            return Optional.of(Order.create(rs));
+        }
+        return Optional.empty();
+    }
 }

@@ -110,41 +110,50 @@ public class CustomerRestController {
     @GetMapping(path="{customerId}/orders")
     public ResponseEntity<String> getOrdersForCustomer(@PathVariable Integer customerId) {
 
-        // Optional<Customer> cust = custRepo.findCustomerById(customerId);
-        // Optional<Order> ord = custRepo.getCustomerOrders(customerId);
-
-        // if (cust.isEmpty()) {
-        //     return ResponseEntity.status(404).body(
-        //         Json.createObjectBuilder().add("error message"
-        //         , "record not found").build().toString());
-        // }
-        // return ResponseEntity.ok(ord.get().toJSON().toString());
-        
-        List<Order> orders = new ArrayList<Order>();
-        JsonArray result = null;
-        
-        orders = custRepo.getCustomerOrders(customerId);
         Optional<Customer> cust = custRepo.findCustomerById(customerId);
-
+        Optional<Order> ord = custRepo.getCustomerOrders(customerId);
+        System.out.println(cust);
+        System.out.println(ord);
+        List<Order> orders = new ArrayList<>();
+        ord.ifPresent(orders::add);
         JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
-
         for (Order o : orders) {
             arrBuilder.add(o.toJSON());
         }
+        JsonArray result = arrBuilder.build();
 
-        result = arrBuilder.build();
-
-        if ((result.size() == 0) && (cust.isEmpty())) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(Json.createObjectBuilder().add("error message"
-                    , "record not found").build().toString());
+        if ((cust.isEmpty()) && (ord.isEmpty())) {
+            return ResponseEntity.status(404).body(
+                Json.createObjectBuilder().add("error message"
+                , "record not found").build().toString());
         }
+        return ResponseEntity.ok(result.toString());
+        
+    //     List<Order> orders = new ArrayList<Order>();
+    //     JsonArray result = null;
+        
+    //     orders = custRepo.getCustomerOrders(customerId);
+    //     Optional<Customer> cust = custRepo.findCustomerById(customerId);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(result.toString());
+    //     JsonArrayBuilder arrBuilder = Json.createArrayBuilder();
+
+    //     for (Order o : orders) {
+    //         arrBuilder.add(o.toJSON());
+    //     }
+
+    //     result = arrBuilder.build();
+
+    //     if ((result.size() == 0) && (cust.isEmpty())) {
+    //     return ResponseEntity
+    //             .status(HttpStatus.NOT_FOUND)
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .body(Json.createObjectBuilder().add("error message"
+    //                 , "record not found").build().toString());
+    //     }
+
+    //     return ResponseEntity
+    //             .status(HttpStatus.OK)
+    //             .contentType(MediaType.APPLICATION_JSON)
+    //             .body(result.toString());
     }
 }
